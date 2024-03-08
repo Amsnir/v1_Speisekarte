@@ -1,0 +1,119 @@
+﻿@using Speisekarte.Data;
+@model List<Speise>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h1 style="text-align:center">SpeiseKarte</h1>
+<h4 style="text-align:center">Spezialangebot des Tages: @ViewData["TagesHit"]</h4>
+
+<hr />
+@if(ViewData["Kategorien"] is not null)
+{
+    var elem = ViewData["Kategorien"] as IEnumerable<SelectListItem>;
+    if(elem is not null)
+    {
+        foreach(var n in elem)
+        {
+            <li>@n.Text ist @n.Value</li>
+        }
+        <br />
+        <label class="control-label">Kategorien: </label>
+        <select form-control" asp-items="elem"></select>
+    }
+}
+<br />
+<hr />
+
+<table id="SpeisenTable" class="table table-bordered table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <td>Titel</td>
+            <td>Notiz</td>
+            <td>Sterne</td>
+            <td>Zutaten</td>
+            <td>Löschen</td>
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            foreach (Speise speise in Model)
+            {
+                <tr>
+                    <td>@speise.Titel</td>
+                    <td>@speise.Notizen</td>
+                    <td>
+                        @for(int i=0; i < @speise.Sterne; i++){
+                            <span>🟊</span>
+                        }
+                    </td>
+                    <td>
+                    <ul>
+                    @for (int i = 0; i < speise.Zutaten.Count; i++)
+                    {
+                        <li>@speise.Zutaten[i]</li>
+                    }
+                    </ul>
+                    </td>
+                    @*<td><a asp-route-id="@speise.Id" asp-controller="Home" asp-action="DeleteSpeise" class="btn btn-danger">Delete</a></td>*@
+                    <td><button type="button" class="btn btn-danger" onclick="onDeleteClicked(@speise.Id)">Delete</button></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Löschen bestätigen</h5>
+                <button type="button" class="btn btn-close close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Wollen Sie wirklich löschen?
+            </div>
+            <div class="modal-footer">                
+                <button type="button" class="btn btn-success ok">Ja</button>
+                <button type="button" class="btn btn-default cancel" data-dismiss="modal">Nein</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        function onDeleteClicked(id) {
+            //Frage den Benutzer...
+
+            $('#confirmDelete').modal('show');
+
+            $('#confirmDelete .modal-footer .ok').on('click', function () {
+                //Backend Call
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("DeleteSpeise")",
+                    data: { id: id },
+                    success: function (msg) {
+                        //alert("Ok, wurde gelöscht");
+                        location.reload();
+                    },
+                    error: function (msg) {
+                        alert("Fehler beim Löschen");
+                    }
+                });
+                $('#confirmDelete').modal('hide');
+            });
+            $('#confirmDelete .modal-footer .cancel').on('click', function () {
+                $('#confirmDelete').modal('hide');
+            });
+            $('#confirmDelete .modal-header .close').on('click', function () {
+                $('#confirmDelete').modal('hide');
+            });
+        }
+    </script>
+}

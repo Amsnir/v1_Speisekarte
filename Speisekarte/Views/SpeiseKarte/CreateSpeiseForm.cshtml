@@ -1,0 +1,38 @@
+﻿@model Speise
+@using Speisekarte.Data;
+
+
+<div class="container">
+    <form asp-controller="SpeiseKarte" asp-action="CreateEditSpeiseListe" enctype="multipart/form-data">
+        <div class="card">
+            <div class="card-header">
+                <h1>Neue Speise erstellen</h1>
+            </div>
+            <div class="card-body">
+                <input hidden asp-for="Id" />
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label>Welche Speise möchten hinzufügen?</label>
+                        <input class="form-control" asp-for="Titel" type="text" placeholder="Speise" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label>Notizen (z.B. wie die Speise zubereitet wird)</label>
+                        <textarea class="form-control" asp-for="Notizen" type="text" placeholder="Schritt 1: Kartoffel schneiden..."></textarea>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <select asp-for="Sterne" form-control" asp-items="@((IEnumerable<SelectListItem>)ViewData["Kategorien"])"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" type="submit">Hinzufügen</button>
+            </div>
+        </div>
+
+    </form>
+</div>

@@ -1,0 +1,84 @@
+﻿@model Speise
+@using Speisekarte.Data;
+@{
+    ViewData["Title"] = "Index";
+}
+
+<form asp-controller="SpeiseKarte" asp-action="CreateEditSpeiseListe" enctype="multipart/form-data">
+    <div class="card">
+        <div class="card-header">
+            Geschenke bearbeiten
+        </div>
+        <div class="card-body">
+            <input hidden asp-for="Id" />
+
+            Speise:
+            <div class="row mb-3">
+                <div class="col">
+                    <input class="form-control" asp-for="Titel" type="text" placeholder="Speisen Name" />
+                </div>
+            </div>
+
+            Notizen:
+            <div class="row mb-3">
+                <div class="col">
+                    <input class="form-control" asp-for="Notizen" type="text" placeholder="Notizen" />
+                </div>
+            </div>
+
+            Sterne:
+            <div class="row mb-3">
+                <div class="col">
+                    @*<input class="form-control" asp-for="Sterne" type="number" placeholder="Sterne" max="3"/>*@
+                    <select asp-for="Sterne" form-control" asp-items="@((IEnumerable<SelectListItem>)ViewData["Kategorien"])"></select>
+                </div>
+            </div>
+
+            Zutaten:
+            <div id="zutaten-container">
+                <div class="row mb-3 zutaten-row">
+                    <div class="col">
+                        <input class="form-control" asp-for="Zutaten[0].Beschreibung" placeholder="Beschreibung" />
+                    </div>
+                    <div class="col">
+                        <input class="form-control" asp-for="Zutaten[0].Einheit" placeholder="Einheit" />
+                    </div>
+                    <div class="col">
+                        <input class="form-control" asp-for="Zutaten[0].Menge" placeholder="Menge" />
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-danger remove-zutat">Entfernen</button>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary" id="add-zutat">Weitere Zutat hinzufügen</button>
+
+        </div>
+
+        <div class="card-footer">
+            <button class="btn btn-primary" type="submit">Speichern</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        var zutatIndex = 0;
+
+        $('#add-zutat').click(function () {
+            zutatIndex++;
+            var row = $('.zutaten-row').first().clone();
+            row.find('input').each(function () {
+                var newName = $(this).attr('name').replace('[0]', '[' + zutatIndex + ']');
+                $(this).attr('name', newName);
+                $(this).val('');
+            });
+            $('#zutaten-container').append(row);
+        });
+
+        $(document).on('click', '.remove-zutat', function () {
+            $(this).closest('.zutaten-row').remove();
+            zutatIndex--;
+        });
+    });
+</script>

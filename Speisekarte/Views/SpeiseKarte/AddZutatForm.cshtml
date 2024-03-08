@@ -1,0 +1,41 @@
+﻿@model Zutat;
+@using Speisekarte.Data;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<form asp-controller="SpeiseKarte" asp-action="AddZutat" enctype="multipart/form-data">
+    <div class="card">
+        <div class="card-header">
+            <h1>Hier werden Zutaten hinzugefügt!</h1>
+        </div>
+        <div class="card-body">
+            <input hidden asp-for="SpeiseId" />
+
+            <div class="row mb-3">
+                <div class="col">
+                    <label>Wie heißt die Zutat?</label>
+                    <input class="form-control" asp-for="Beschreibung" type="text" placeholder="Zutat" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <label>In welcher Einheit soll die Menge dargestellt werden (g/kg/l/ml/...)?</label>
+                    <input class="form-control" asp-for="Einheit" type="text" placeholder="Einheit" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <label>Wie viel soll von der Zutat verwendet werden?</label>
+                    <input class="form-control" asp-for="Menge" type="number" step="0.1" placeholder="Menge" />
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-primary" type="submit">Hinzufügen</button>
+        </div>
+    </div>
+
+</form>
